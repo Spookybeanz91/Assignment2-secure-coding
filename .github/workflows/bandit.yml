@@ -1,21 +1,22 @@
-name: Bandit Scan
+name: Bandit Security Scan
 
 on:
   push:
+    branches: [ main, master ]
   pull_request:
+    branches: [ main, master ]
 
 jobs:
-  bandit:
+  analyze:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+      
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Run Bandit
-        uses: mdegis/bandit-action@v1.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          path: "."
-          level: high
-          confidence: high
-          exit_zero: true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Perform Bandit Analysis
+        uses: PyCQA/bandit-action@v1
